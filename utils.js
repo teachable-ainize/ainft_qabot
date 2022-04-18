@@ -9,26 +9,51 @@ const getAddress = (hash, signature, chainId) => {
   const len = sigBuffer.length;
   const lenHash = len - 65;
   const { r, s, v } = ainUtil.ecSplitSig(sigBuffer.slice(lenHash, len));
-  const publicKey = ainUtil.ecRecoverPub(
-    Buffer.from(hash.slice(2), "hex"),
-    r,
-    s,
-    v,
-    chainId
-  );
-  return ainUtil.toChecksumAddress(
-    ainUtil.bufferToHex(
-      ainUtil.pubToAddress(publicKey, publicKey.length === 65)
-    )
-  );
+  const publicKey = ainUtil.ecRecoverPub(Buffer.from(hash.slice(2), "hex"), r, s, v, chainId);
+  return ainUtil.toChecksumAddress(ainUtil.bufferToHex(ainUtil.pubToAddress(publicKey, publicKey.length === 65)));
 };
 
 const verifySignature = (tx, sig, addr, chainId) => {
   return ainUtil.ecVerifySig(tx, sig, addr, chainId);
 };
 
+const getMessage = (transaction) => {
+  // case: type is SET_VALUE
+  if (transaction.value) {
+    return transaction.value.message;
+  }
+
+  // case: type is SET
+  const { op_list } = transaction;
+  let message = "";
+  for (const op of op_list) {
+    const { ref, value } = op;
+    if (ref.includes("message")) {
+      message = value;
+      break;
+    }
+  }
+  return message;
+};
+
+const getRef = (transactionData) => {
+  const { operation } = transactionData;
+  const { type, op_list } = operation;
+
+  switch (type) {
+    case "SET_VALUE":
+      return operation.ref;
+    case "SET":
+      return op_list[0].ref.split("/").slice(0, -1).join("/");
+    default:
+      return null;
+  }
+};
+
 module.exports = {
   getTransactionHash,
   getAddress,
   verifySignature,
+  getMessage,
+  getRef,
 };
