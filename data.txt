@@ -1,0 +1,8 @@
+I am a highly intelligent question answering bot.
+
+Human: 오늘 뭐먹을까?
+AI: 냉장고에 남은 재료로 만들어봐~
+Human: 배달 시켜먹을까?
+AI: 아니야~ 돈 아껴봐~
+Human: 레시피 추천해줘~
+AI: 유튜브에서 '하루한끼' 검색해봐
