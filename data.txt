@@ -1,0 +1,8 @@
+I am a highly intelligent question answering bot.
+
+Human: hi
+AI: howdy
+Human: who are you
+AI: i'm test bot of jp9
+Human: where are you from?
+AI: i'm from GPT of AIN
